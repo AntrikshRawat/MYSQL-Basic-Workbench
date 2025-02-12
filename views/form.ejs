@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Table</title>
+    <link rel="stylesheet" href="/style.css"> <!-- Linking external CSS -->
+</head>
+<script>
+    function deleteUser(data, type) {
+        fetch('/delete', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ data, type }) 
+        })
+        .then(response => {
+            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+            return response.json();
+        })
+        .then(data => {
+            console.log('Deleted:', data);
+            location.reload();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to delete. Please try again.');
+        });
+    }
+</script>
+<body>
+    <div class="form-container">
+        <form action="/panel/table" method="post" class="form">
+            <h2>Select Table</h2>
+            <select name="table" id="table">
+                <% tables.forEach(function(table) { %>
+                    <option value="<%= table %>"><%= table %></option>
+                <% }); %>
+            </select>
+            <button type="submit" style="width: fit-content">Change</button>
+        </form>
+    </div>
+    <div class="form-container">
+        <form action="/panel/submit" method="post">
+            <h2>Enter Data</h2>
+            <% cols.forEach(function(col) { %>
+                <% if (col.field === 'id') return; %> <!-- Skip id if it's auto-incremented -->
+                <label for="<%= col.field %>"><%= col.field.charAt(0).toUpperCase() + col.field.slice(1) %>:</label>
+                <input type="<%= col.type %>" id="<%= col.field %>" name="<%= col.field %>" required>
+            <% }); %>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <!-- Display Data -->
+    <h2>Submitted Data</h2>
+    <table>
+        <thead>
+            <tr>
+            <% cols.forEach(function(col) { %>
+                <th><%= col.field.charAt(0).toUpperCase() + col.field.slice(1) %></th>
+            <% }); %>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (data.length === 0) { %>
+                <tr>
+                    <td colspan="<%= cols.length + 1 %>">No data found</td>
+                </tr>
+            <% } else { %>
+                <% data.forEach(function(row) { %>
+                    <tr>
+                        <% cols.forEach(function(col) { %>
+                            <td><%= row[col.field] %></td>
+                        <% }); %>
+                        <td>
+                            <button onclick="deleteUser('<%= encodeURIComponent(row[cols[0].field]) %>', '<%= cols[0].field %>')">
+                                Delete Row
+                            </button>
+                        </td>
+                    </tr>
+                <% }); %>
+            <% } %>
+        </tbody>        
+    </table>
+</body>
+</html>

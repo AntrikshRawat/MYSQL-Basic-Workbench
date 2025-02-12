@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>config db</title>
+ <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+ <div class="form-container">
+  <form action="/panel" method="post">
+      <h2>DataBase Configration</h2>
+      <% if(message) { %>
+       <h3 class="error"><%= message %></h3>
+   <% } %>
+      <label for="host">Host:</label>
+      <input type="text" id="host" name="host" required>
+
+      <label for="user">User:</label>
+      <input type="text" id="user" name="user" required>
+
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required>
+
+      <label for="database">DataBase Name:</label>
+      <input type="text" id="database" name="database" required>
+
+      <label for="table">Table Name:</label>
+      <input type="text" id="table" name="table" required>
+
+      <button type="submit">Connect</button>
+  </form>
+</div>
+</body>
+</html>
