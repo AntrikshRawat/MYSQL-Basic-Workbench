@@ -137,8 +137,3 @@ app.delete('/delete', async (req, res) => {
     }
 });
 
-// Start the server
-const PORT = 5436;
-app.listen(PORT, () => {
-    console.log(`🚀 Server is running at http://localhost:${PORT}`);
-});
